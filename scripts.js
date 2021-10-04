@@ -3,9 +3,20 @@ const canvas = document.querySelector('#canvas');
 const resetButton = document.querySelector('#reset-button');
 const brushSelect = document.querySelector('#brush-select');
 let gridSize = 16;
-let brush = 'grey';
+/* let brush = 'grey';
 let fadeBrushLightness = 90;
 let fadeBrushDecrease = true;
+*/
+let brush = {
+    type: 'grey',
+    location: 0,
+    settings: {
+        fade: {
+            brushLightness: 90,
+            brushDecrease: true,
+        },
+    },
+}
 
 // Add initial event listeners
 document.addEventListener('DOMContentLoaded', createGrid);
@@ -36,11 +47,11 @@ function createGrid() {
 
 // Function to fill the cell with colour on mouse over
 function fillCell() {
-    if (brush === 'grey'){
+    if (brush.type === 'grey'){
         this.style.backgroundColor = 'hsl(0, 0%, 50%)';
-    } else if (brush === 'random') {
+    } else if (brush.type === 'random') {
         this.style.backgroundColor = randomBrush();
-    } else if (brush === 'fade') {
+    } else if (brush.type === 'fade') {
         this.style.backgroundColor = fadeBrush();
     }
 
@@ -62,7 +73,7 @@ function reset() {
 
 // Function to change the color of the brush on selection
 function changeBrush() {
-    brush = this.value;
+    brush.type = this.value;
 }
 
 // Random color brush function
@@ -76,17 +87,17 @@ function randomBrush() {
 
 // Fade brush function - make the brush go light to dark and back
 function fadeBrush() {
-    let currentLightness = fadeBrushLightness;
+    let currentLightness = brush.settings.fade.brushLightness;
 
-    if (fadeBrushDecrease === true) {
-        fadeBrushLightness -= 10; 
+    if (brush.settings.fade.brushDecrease === true) {
+        brush.settings.fade.brushLightness -= 10; 
     } else {
-        fadeBrushLightness += 10;
+        brush.settings.fade.brushLightness += 10;
     }
 
     // Change the fadeBrushChange if 0 or 90
-    if (fadeBrushLightness == 0 || fadeBrushLightness >= 90) {
-        fadeBrushDecrease = !fadeBrushDecrease;
+    if (brush.settings.fade.brushLightness == 0 || brush.settings.fade.brushLightness >= 90) {
+        brush.settings.fade.brushDecrease = !brush.settings.fade.brushDecrease;
     }
 
     return `hsl(0, 0%, ${currentLightness}%)`;
