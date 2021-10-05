@@ -6,11 +6,15 @@
         <title>Etch-A-Sketch</title>
         <link rel="stylesheet" href="styles.css">
 
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Bonheur+Royale&display=swap" rel="stylesheet">
+
     </head>
     <body>
         <div id="title-div">
             <h1>Etch-A-Sketch</h1>
-            <p>Etch those sketches!</p>
+            <p>Controls: Move the cursor over the canvas, use the arrow keys or spin the wheels by hovering over a wheel and scrolling with your mouse wheel!</p>
             <button id="reset-button">Reset</button>
             <label for="brush">Select Brush:</label>
             <select name="brush" id="brush-select">
@@ -20,15 +24,18 @@
             </select>
         </div>
         <div id="frame">
+            <div id="logo-div" class="white-text">
+                Etchy-Mc-Sketchy
+            </div>
             <div id="canvas">
                 <!-- Etch-A-Sketch Grid -->
             </div>
             <div id="controls-div">
                 <div id="controls-title-div" class="space-between-div">
-                    <div class="controls-title">
+                    <div class="controls-title white-text">
                         <p>Left - Right</p>
                     </div>
-                    <div class="controls-title">
+                    <div class="controls-title white-text">
                         <p>Down - Up</p>
                     </div>
                 </div>

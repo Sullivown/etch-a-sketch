@@ -35,6 +35,33 @@ wheels.forEach(wheel => {
     wheel.addEventListener('wheel', moveBrush);
 })
 
+// Mouse movement tracker
+let last_position = {};
+let mouseMovement = '';
+
+document.addEventListener('mousemove', function (event) {
+    if (typeof(last_position.x) != 'undefined') {
+        let deltaX = last_position.x - event.offsetX,
+            deltaY = last_position.y - event.offsetY;
+        if (Math.abs(deltaX) > Math.abs(deltaY) && deltaX > 0) {
+            //left
+            mouseMovement = 'left';
+        } else if (Math.abs(deltaX) > Math.abs(deltaY) && deltaX < 0) {
+            //right
+            mouseMovement = 'right';
+        } else if (Math.abs(deltaY) > Math.abs(deltaX) && deltaY > 0) {
+            //up
+            mouseMovement = 'up';
+        } else if (Math.abs(deltaY) > Math.abs(deltaX) && deltaY < 0) {
+            //down
+            mouseMovement = 'down';
+        }
+    }
+    last_position = {
+        x : event.offsetX,
+        y : event.offsetY
+    };
+});
 
 //Function to add empty grid to the page
 function createGrid() {
@@ -56,20 +83,12 @@ function createGrid() {
 
     // Add mouse over event listener to each cell
     document.querySelectorAll('.single-cell').forEach(cell => {
-        cell.addEventListener('mouseover', fillCell)
+        cell.addEventListener('mouseover', moveBrush)
     })
 }   
 
 // Function to fill the cell with colour
-function fillCell(event) {
-    let cellId = 0;
-
-    // Check for event
-    if (event.type === 'mouseover') {
-        cellId = this.id;
-    } else if (event.type === 'keydown' || event.type === 'wheel') {
-        cellId = `cell-${brush.location}`;
-    }
+function fillCell(cellId) {
 
     const cell = document.getElementById(cellId);
 
@@ -81,12 +100,8 @@ function fillCell(event) {
         cell.style.backgroundColor = fadeBrush();
     }
 
-
     // Set the fade in animation
     cell.classList.add('fade-in-cell');
-
-    // Set the brush location to this square
-    brush.location = parseInt(cellId.split('-').pop());
 }
 
 // Function to reset grid and adjust size
@@ -154,32 +169,63 @@ function validCell(cellNumber) {
 
 function moveBrush(event) {
     let newLocation = 0;
-  
-    // Calculate the new brush location
-    if (event.key === 'ArrowLeft' || (event.deltaY > 0 && this.id === "left-wheel")) {
-        newLocation = brush.location - 1;
-        leftWheelRotation -= degreesPerRotation;
-        leftWheel.style.transform = `rotate(${leftWheelRotation}deg)`;
-    } else if (event.key === 'ArrowRight' || (event.deltaY < 0 && this.id === "left-wheel")) {
-        newLocation = brush.location + 1;
-        leftWheelRotation += degreesPerRotation;
-        leftWheel.style.transform = `rotate(${leftWheelRotation}deg)`;
-    } else if (event.key === 'ArrowUp' || (event.deltaY < 0 && this.id === "right-wheel")) {
-        newLocation = brush.location - gridSize;
-        rightWheelRotation += degreesPerRotation;
-        rightWheel.style.transform = `rotate(${rightWheelRotation}deg)`;
-    } else if (event.key === 'ArrowDown' || (event.deltaY > 0 && this.id === "right-wheel")) {
-        newLocation = brush.location + gridSize;
-        rightWheelRotation -= degreesPerRotation;
-        rightWheel.style.transform = `rotate(${rightWheelRotation}deg)`;
+
+    let cellId = '';
+
+    // Check for event
+    if (event.type === 'mouseover') {
+        cellId = this.id;
+        
+        // Set the brush location to this square
+        brush.location = parseInt(cellId.split('-').pop());
+    } else if (event.type === 'keydown' || event.type === 'wheel') {
+        cellId = `cell-${brush.location}`;
+    }
+    
+    // Calculate the new brush location and spin the wheel
+    if ((event.type === 'mouseover' && mouseMovement === 'left') || event.key === 'ArrowLeft' || (event.deltaY > 0 && this.id === "left-wheel")) {
+        newLocation = (event.type === 'mouseover' ? brush.location : brush.location - 1);
+        spinWheel('left', 'left');
+    } else if ((event.type === 'mouseover' && mouseMovement === 'right') || event.key === 'ArrowRight' || (event.deltaY < 0 && this.id === "left-wheel")) {
+        newLocation = (event.type === 'mouseover' ? brush.location : brush.location + 1);
+        spinWheel('left', 'right');
+    } else if ((event.type === 'mouseover' && mouseMovement === 'up') || event.key === 'ArrowUp' || (event.deltaY < 0 && this.id === "right-wheel")) {
+        newLocation = (event.type === 'mouseover' ? brush.location : brush.location - gridSize);
+        spinWheel('right', 'left');
+    } else if ((event.type === 'mouseover' && mouseMovement === 'down') || event.key === 'ArrowDown' || (event.deltaY > 0 && this.id === "right-wheel")) {
+        newLocation = (event.type === 'mouseover' ? brush.location : brush.location + gridSize);
+        spinWheel('right', 'right');
     }
 
     // If cell exists color it and move 
     if (validCell(newLocation)) {
+
         // Move the brush location
         brush.location = newLocation;
+        let newBrushLocationId = `cell-${brush.location}`;
 
         // Color new cell
-        fillCell(event);
+        fillCell(newBrushLocationId);
     } 
+}
+
+// Wheel spin function
+function spinWheel(wheel, direction) {
+    if (wheel === 'left') {
+        if (direction === 'left') {
+            leftWheelRotation -= degreesPerRotation;
+            leftWheel.style.transform = `rotate(${leftWheelRotation}deg)`;
+        } else {
+            leftWheelRotation += degreesPerRotation;
+            leftWheel.style.transform = `rotate(${leftWheelRotation}deg)`;
+        }
+    } else {
+        if (direction === 'left') {
+            rightWheelRotation -= degreesPerRotation;
+            rightWheel.style.transform = `rotate(${rightWheelRotation}deg)`;
+        } else {
+            rightWheelRotation += degreesPerRotation;
+            rightWheel.style.transform = `rotate(${rightWheelRotation}deg)`;
+        }
+    }
 }
