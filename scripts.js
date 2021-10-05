@@ -21,7 +21,19 @@ const brushSelect = document.querySelector('#brush-select');
 document.addEventListener('DOMContentLoaded', createGrid);
 resetButton.addEventListener('click', reset);
 brushSelect.addEventListener('change', changeBrush);
-window.addEventListener('keyup', moveBrush)
+window.addEventListener('keydown', moveBrush)
+
+// Wheel settings
+const leftWheel = document.querySelector('#left-wheel');
+const rightWheel = document.querySelector('#right-wheel');
+let leftWheelRotation = 0;
+let rightWheelRotation = 0;
+let degreesPerRotation = 10;
+
+const wheels = document.querySelectorAll('.control-wheel');
+wheels.forEach(wheel => {
+    wheel.addEventListener('wheel', moveBrush);
+})
 
 
 //Function to add empty grid to the page
@@ -55,7 +67,7 @@ function fillCell(event) {
     // Check for event
     if (event.type === 'mouseover') {
         cellId = this.id;
-    } else if (event.type === 'keyup') {
+    } else if (event.type === 'keydown' || event.type === 'wheel') {
         cellId = `cell-${brush.location}`;
     }
 
@@ -90,6 +102,11 @@ function reset() {
     gridSize = parseInt(promptInput);
     numberOfCells = gridSize * gridSize;
 
+    // Reset wheel positions
+    leftWheel.style.transform = `rotate(0deg)`;
+    rightWheel.style.transform = `rotate(0deg)`;
+
+    // Clear the current gid and create a new one
     canvas.innerHTML = '';
     createGrid();
 }
@@ -136,24 +153,27 @@ function validCell(cellNumber) {
 }
 
 function moveBrush(event) {
-    console.log("BRUSH location: " + brush.location);
     let newLocation = 0;
-
+  
     // Calculate the new brush location
-    if (event.key === 'ArrowLeft') {
-        console.log(typeof(gridSize))
+    if (event.key === 'ArrowLeft' || (event.deltaY > 0 && this.id === "left-wheel")) {
         newLocation = brush.location - 1;
-    } else if (event.key === 'ArrowRight') {
-        console.log(typeof(gridSize))
+        leftWheelRotation -= degreesPerRotation;
+        leftWheel.style.transform = `rotate(${leftWheelRotation}deg)`;
+    } else if (event.key === 'ArrowRight' || (event.deltaY < 0 && this.id === "left-wheel")) {
         newLocation = brush.location + 1;
-    } else if (event.key === 'ArrowUp') {
-        console.log(typeof(gridSize))
+        leftWheelRotation += degreesPerRotation;
+        leftWheel.style.transform = `rotate(${leftWheelRotation}deg)`;
+    } else if (event.key === 'ArrowUp' || (event.deltaY < 0 && this.id === "right-wheel")) {
         newLocation = brush.location - gridSize;
-    } else if (event.key === 'ArrowDown') {
-        console.log(typeof(gridSize))
+        rightWheelRotation += degreesPerRotation;
+        rightWheel.style.transform = `rotate(${rightWheelRotation}deg)`;
+    } else if (event.key === 'ArrowDown' || (event.deltaY > 0 && this.id === "right-wheel")) {
         newLocation = brush.location + gridSize;
+        rightWheelRotation -= degreesPerRotation;
+        rightWheel.style.transform = `rotate(${rightWheelRotation}deg)`;
     }
-    console.log("NEW location: " + newLocation)
+
     // If cell exists color it and move 
     if (validCell(newLocation)) {
         // Move the brush location
