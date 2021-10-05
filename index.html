@@ -15,13 +15,16 @@
         <div id="title-div">
             <h1>Etch-A-Sketch</h1>
             <p>Controls: Move the cursor over the canvas, use the arrow keys or spin the wheels by hovering over a wheel and scrolling with your mouse wheel!</p>
-            <button id="reset-button">Reset</button>
-            <label for="brush">Select Brush:</label>
-            <select name="brush" id="brush-select">
-                <option value="grey" default>Grey (default)</option>
-                <option value="random">Random Colors</option>
-                <option value="fade">Fade</option>
-            </select>
+            <div>
+                <input type="color" id="color-picker" value="#FFFFFF">
+                <label for="brush">Select Brush:</label>
+                <select name="brush" id="brush-select">
+                    <option value="grey" default>Grey (default)</option>
+                    <option value="random">Random Colors</option>
+                    <option value="fade">Fade</option>
+                </select>
+                <button id="reset-button">Reset</button>
+            </div>
         </div>
         <div id="frame">
             <div id="logo-div" class="white-text">
