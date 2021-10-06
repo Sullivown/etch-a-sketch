@@ -4,11 +4,14 @@ let numberOfCells = gridSize * gridSize;
 
 let brush = {
     type: 'solid',
-    color: 'hsl(0, 0%, 50%)',
+    color: {
+        hue: 0,
+        saturation: 0,
+        lightness: 50,
+        },
     location: 0,
     settings: {
         fade: {
-            brushLightness: 90,
             brushDecrease: true,
         },
     },
@@ -96,7 +99,7 @@ function fillCell(cellId) {
     const cell = document.getElementById(cellId);
 
     if (brush.type === 'solid'){
-        cell.style.backgroundColor = brush.color;
+        cell.style.backgroundColor = `hsl(${brush.color.hue},${brush.color.saturation}%,${brush.color.lightness}%`;
     } else if (brush.type === 'random') {
         cell.style.backgroundColor = randomBrush();
     } else if (brush.type === 'fade') {
@@ -145,20 +148,21 @@ function randomBrush() {
 
 // Fade brush function - make the brush go light to dark and back
 function fadeBrush() {
-    let currentLightness = brush.settings.fade.brushLightness;
+
+    console.log(brush.color.lightness);
 
     if (brush.settings.fade.brushDecrease === true) {
-        brush.settings.fade.brushLightness -= 10; 
+        brush.color.lightness -= 10; 
     } else {
-        brush.settings.fade.brushLightness += 10;
+        brush.color.lightness += 10;
     }
-
+    console.log(brush.color.lightness);
     // Change the fadeBrushChange if 0 or 90
-    if (brush.settings.fade.brushLightness == 0 || brush.settings.fade.brushLightness >= 90) {
+    if (brush.color.lightness <= 0 || brush.color.lightness >= 90) {
         brush.settings.fade.brushDecrease = !brush.settings.fade.brushDecrease;
     }
-
-    return `hsl(0, 0%, ${currentLightness}%)`;
+    console.log(`hsl(${brush.color.hue}, ${brush.color.saturation}%, ${brush.color.lightness}%)`)
+    return `hsl(${brush.color.hue}, ${brush.color.saturation}%, ${brush.color.lightness}%)`;
 }
 
 // Checks if a cell is exists
@@ -237,13 +241,14 @@ function spinWheel(wheel, direction) {
 function changeColor(event) {
     // convert hex to hsl
     let hsl = hexToHSL(event.target.value);
-    // set brush to hsl value
-    brush.color = hsl;
+
+    // set brush valus to hsl values
+    [brush.color.hue, brush.color.saturation, brush.color.lightness] = hsl;
 }
 
 /* Convert hex to HSL function
    Source: https://css-tricks.com/converting-color-spaces-in-javascript/
-   Thanks to Jon Kantner */
+   Credit: Jon Kantner */
 function hexToHSL(H) {
     // Convert hex to RGB first
     let r = 0, g = 0, b = 0;
@@ -286,5 +291,5 @@ function hexToHSL(H) {
     s = +(s * 100).toFixed(1);
     l = +(l * 100).toFixed(1);
   
-    return "hsl(" + h + "," + s + "%," + l + "%)";
+    return [h,s,l];
   }
