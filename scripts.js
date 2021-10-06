@@ -22,12 +22,15 @@ const canvas = document.querySelector('#canvas');
 const resetButton = document.querySelector('#reset-button');
 const brushSelect = document.querySelector('#brush-select');
 const colorPicker = document.querySelector('#color-picker');
+const gridSlider = document.querySelector('#grid-size-slider');
 
 document.addEventListener('DOMContentLoaded', createGrid);
 resetButton.addEventListener('click', reset);
 brushSelect.addEventListener('change', changeBrush);
 colorPicker.addEventListener('input', changeColor);
+gridSlider.addEventListener('input', reset);
 window.addEventListener('keydown', moveBrush);
+
 
 // Wheel settings
 const leftWheel = document.querySelector('#left-wheel');
@@ -79,6 +82,10 @@ function createGrid() {
     canvas.style.gridTemplateRows = `repeat(${gridSize}, 1fr`;
     canvas.style.gridTemplateColumns = `repeat(${gridSize}, 1fr`;
 
+    // Update the grid size display
+    let sizeDisplay = document.querySelector('#size-display');
+    sizeDisplay.textContent = `${gridSize} x ${gridSize}`;
+
     // Create as many cells (divs) as required and add them to the canvas
     for (let i = 1; i <= numberOfCells; i++) {
         let cell = document.createElement('div');
@@ -113,14 +120,7 @@ function fillCell(cellId) {
 // Function to reset grid and adjust size
 function reset() {
 
-    let promptInput = 16;
-
-    // Only allow numerical values > 0 and <= 100 as a valid size
-    do {
-        promptInput = prompt('Grid size:', 16)
-    } while (isNaN(gridSize) || gridSize < 1 || gridSize > 100);
-    
-    gridSize = parseInt(promptInput);
+    gridSize = parseInt(gridSlider.value);
     numberOfCells = gridSize * gridSize;
 
     // Reset wheel positions
@@ -187,22 +187,26 @@ function moveBrush(event) {
         brush.location = parseInt(cellId.split('-').pop());
     } else if (event.type === 'keydown' || event.type === 'wheel') {
         cellId = `cell-${brush.location}`;
-        event.preventDefault();
     }
     
     // Calculate the new brush location and spin the wheel
     if ((event.type === 'mouseover' && mouseMovement === 'left') || event.key === 'ArrowLeft' || (event.deltaY > 0 && this.id === "left-wheel")) {
         newLocation = (event.type === 'mouseover' ? brush.location : brush.location - 1);
         spinWheel('left', 'left');
+        event.preventDefault();
     } else if ((event.type === 'mouseover' && mouseMovement === 'right') || event.key === 'ArrowRight' || (event.deltaY < 0 && this.id === "left-wheel")) {
         newLocation = (event.type === 'mouseover' ? brush.location : brush.location + 1);
         spinWheel('left', 'right');
+        event.preventDefault();
     } else if ((event.type === 'mouseover' && mouseMovement === 'up') || event.key === 'ArrowUp' || (event.deltaY < 0 && this.id === "right-wheel")) {
         newLocation = (event.type === 'mouseover' ? brush.location : brush.location - gridSize);
-        spinWheel('right', 'left');
+        spinWheel('right', 'right');
+        event.preventDefault();
     } else if ((event.type === 'mouseover' && mouseMovement === 'down') || event.key === 'ArrowDown' || (event.deltaY > 0 && this.id === "right-wheel")) {
         newLocation = (event.type === 'mouseover' ? brush.location : brush.location + gridSize);
-        spinWheel('right', 'right');
+        spinWheel('right', 'left');
+        event.preventDefault();
+        console.log(brush.location + gridSize);
     }
 
     // If cell exists color it and move 
