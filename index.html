@@ -15,15 +15,31 @@
         <div id="title-div">
             <h1>Etch-A-Sketch</h1>
             <p>Controls: Move the cursor over the canvas, use the arrow keys or spin the wheels by hovering over a wheel and scrolling with your mouse wheel!</p>
-            <div>
-                <input type="color" id="color-picker" value="#FFFFFF">
-                <label for="brush">Select Brush:</label>
-                <select name="brush" id="brush-select">
-                    <option value="grey" default>Grey (default)</option>
-                    <option value="random">Random Colors</option>
-                    <option value="fade">Fade</option>
-                </select>
-                <button id="reset-button">Reset</button>
+            <div id="options-div">
+                    <div id="option-div-labels" class="options-div-section">
+                        <div class="option-div">Color</div>
+                        <div class="option-div">Brush Effect</div>
+                        <div class="option-div">Grid Size</div>
+                        <div class="option-div"></div>
+                    </div>
+                    <div id="option-div-selectors" class="options-div-section">
+                        <div class="option-div">
+                            <input type="color" id="color-picker" value="#808080">
+                        </div>
+                        <div class="option-div">
+                            <select name="brush" id="brush-select">
+                                <option value="solid" default>Solid</option>
+                                <option value="random">Random Colors</option>
+                                <option value="fade">Fade</option>
+                            </select>
+                        </div>
+                        <div id="grid-size-slider-div" class="option-div">
+                            <input type="range" id="grid-size-slider" class ="slider" name="grid-size-slider" min="1" max="100">
+                        </div>
+                        <div class="option-div">
+                            <button id="reset-button" class="option-button">Reset</button>
+                        </div>
+                    </div>
             </div>
         </div>
         <div id="frame">
