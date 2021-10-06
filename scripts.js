@@ -187,6 +187,7 @@ function moveBrush(event) {
         brush.location = parseInt(cellId.split('-').pop());
     } else if (event.type === 'keydown' || event.type === 'wheel') {
         cellId = `cell-${brush.location}`;
+        event.preventDefault();
     }
     
     // Calculate the new brush location and spin the wheel
