@@ -74,7 +74,6 @@ document.addEventListener('mousemove', function (event) {
 
 //Function to add empty grid to the page
 function createGrid() {
-
     // Reset brush location
     brush.location = 0;
 
@@ -102,7 +101,6 @@ function createGrid() {
 
 // Function to fill the cell with colour
 function fillCell(cellId) {
-
     const cell = document.getElementById(cellId);
 
     if (brush.type === 'solid'){
@@ -119,7 +117,6 @@ function fillCell(cellId) {
 
 // Function to reset grid and adjust size
 function reset() {
-
     gridSize = parseInt(gridSlider.value);
     numberOfCells = gridSize * gridSize;
 
@@ -148,20 +145,16 @@ function randomBrush() {
 
 // Fade brush function - make the brush go light to dark and back
 function fadeBrush() {
-
-    console.log(brush.color.lightness);
-
     if (brush.settings.fade.brushDecrease === true) {
         brush.color.lightness -= 10; 
     } else {
         brush.color.lightness += 10;
     }
-    console.log(brush.color.lightness);
     // Change the fadeBrushChange if 0 or 90
     if (brush.color.lightness <= 0 || brush.color.lightness >= 90) {
         brush.settings.fade.brushDecrease = !brush.settings.fade.brushDecrease;
     }
-    console.log(`hsl(${brush.color.hue}, ${brush.color.saturation}%, ${brush.color.lightness}%)`)
+
     return `hsl(${brush.color.hue}, ${brush.color.saturation}%, ${brush.color.lightness}%)`;
 }
 
@@ -206,7 +199,6 @@ function moveBrush(event) {
         newLocation = (event.type === 'mouseover' ? brush.location : brush.location + gridSize);
         spinWheel('right', 'left');
         event.preventDefault();
-        console.log(brush.location + gridSize);
     }
 
     // If cell exists color it and move 
@@ -258,13 +250,13 @@ function hexToHSL(H) {
     // Convert hex to RGB first
     let r = 0, g = 0, b = 0;
     if (H.length == 4) {
-      r = "0x" + H[1] + H[1];
-      g = "0x" + H[2] + H[2];
-      b = "0x" + H[3] + H[3];
+        r = "0x" + H[1] + H[1];
+        g = "0x" + H[2] + H[2];
+        b = "0x" + H[3] + H[3];
     } else if (H.length == 7) {
-      r = "0x" + H[1] + H[2];
-      g = "0x" + H[3] + H[4];
-      b = "0x" + H[5] + H[6];
+        r = "0x" + H[1] + H[2];
+        g = "0x" + H[3] + H[4];
+        b = "0x" + H[5] + H[6];
     }
     // Then to HSL
     r /= 255;
@@ -276,25 +268,25 @@ function hexToHSL(H) {
         h = 0,
         s = 0,
         l = 0;
-  
+
     if (delta == 0)
-      h = 0;
+        h = 0;
     else if (cmax == r)
-      h = ((g - b) / delta) % 6;
+        h = ((g - b) / delta) % 6;
     else if (cmax == g)
-      h = (b - r) / delta + 2;
+        h = (b - r) / delta + 2;
     else
-      h = (r - g) / delta + 4;
-  
+        h = (r - g) / delta + 4;
+
     h = Math.round(h * 60);
-  
+
     if (h < 0)
-      h += 360;
-  
+        h += 360;
+
     l = (cmax + cmin) / 2;
     s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
     s = +(s * 100).toFixed(1);
     l = +(l * 100).toFixed(1);
-  
+
     return [h,s,l];
-  }
+}
