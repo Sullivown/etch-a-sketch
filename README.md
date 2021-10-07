@@ -7,7 +7,7 @@ Draw an image on the canvas with a variety of brush options and grid sizes.
 
 ## Features
 ### Multiple Control Options
-Users can use mouse, keyboard or control wheels to move around the grid and fill in the cells.
+Users can use the mouse, keyboard or control wheels to move around the grid and fill in the cells.
 
 ### Color Changer
 Change the color of the brush using the colour picker.
@@ -16,6 +16,9 @@ Change the color of the brush using the colour picker.
 * Solid - One solid colour
 * Fade - Increases/decreases the lightness of the selected colour to fade from light to dark
 * Random - Chooses a random colour for each individual cell
+
+### Adjust Grid Size
+Select a grid size by adjusting the value on the slider. Note that adjusting the grid clears the canvas!
 
 ## Controls
 
